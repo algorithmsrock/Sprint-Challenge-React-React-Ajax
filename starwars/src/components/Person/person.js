@@ -23,21 +23,23 @@ class Person extends Component {
        })
         .then(data => {
         person = data.results[this.props.match.params.key];
-				})
-        .catch(err => {
+				}) 
+				.catch(err => {
           throw new Error(err);
         });
     }
 
+		if (person) {
 		this.setState({
       person: person,
       homeworld: person.homeworld,
       species: person.species[0]
     });
   }
-
-  render() {
-    return (
+}  
+	render() {
+//    if {this.state.person} {
+		return (
       <div className="Person">
         <div>
           <strong>{this.state.person.name}</strong>
@@ -58,7 +60,9 @@ class Person extends Component {
       </div>
     );
   }
+//		return ("");
 }
+
 
 export default Person;
 
