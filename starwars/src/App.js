@@ -1,43 +1,42 @@
 import React, { Component } from 'react';
-import Person from './components/Person/person';
+import axios from 'axios';
+
 import './App.css';
-import { Link } from 'react-router-dom';
+import Person from './components/Person/person';
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      starwarsChars: []
-    };
-  }
+  state = {
+    starwarsChars: [],
+  };
+
   componentDidMount() {
-    // feel free to research what this code is doing.
-    // At a high level we are calling an API to fetch some starwars data from the open web.
-    // We then take that data and resolve it our state.
-    fetch('https://swapi.co/api/people')
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.setState({ starwarsChars: data.results });
+    axios
+      .get('https://swapi.co/api/people')
+      .then(response => {
+        const chars = response.data.results.map(char => {
+          const pattern = /https:\/\/swapi.co\/api\/people\/(.*?)\//;
+          const id = char.url.match(pattern)[1];
+          return {
+            id: id,
+            ...char,
+          };
+        });
+        this.setState({ starwarsChars: chars });
       })
       .catch(err => {
         throw new Error(err);
       });
   }
+
   render() {
     return (
       <div className="App">
         <h1 className="Header">React Wars</h1>
-			  <div className="People__container">
-          {this.state.starwarsChars.map((person, i) => {
-							return (
-								<Link to={`/people/${i}`}>
-							     <Person person={person} key={i} />
-								</Link>      	 
-					    )}
-					)}
-			   </div>
+        <div className="People__container">
+          {this.state.starwarsChars.map(person => {
+            return <Person person={person} key={person.id} />;
+          })}
+        </div>
       </div>
     );
   }

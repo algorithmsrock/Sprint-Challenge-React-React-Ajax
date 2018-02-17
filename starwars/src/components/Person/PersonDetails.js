@@ -1,23 +1,24 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-import './people.css';
 import Homeworld from '../Homeworld/Homeworld';
 import Species from '../Species/Species';
 
-class Person extends Component {
+class PersonDetails extends React.Component {
   state = {
-    movies: []
-  }
+    person: null,
+  };
 
   render() {
-    const person = this.props.person;
-    return (
-      <div className="Person">
-        <Link to="/">Home</Link>
-        <br />
-        <Link to={`/people/${person.id}`}>
+    const person = this.state.person;
+    if (!person) {
+      return <h2>Loading person info...</h2>;
+    } else {
+      return (
+        <div className="Person">
+          <Link to="/">Home</Link>
+          <br />
           <div>
             <strong>{person.name}</strong>
           </div>
@@ -32,21 +33,22 @@ class Person extends Component {
           </div>
           <Homeworld home={person.homeworld} />
           <Species race={person.species} />
-        </Link>
-      </div>
-    );
+        </div>
+      );
+    }
   }
-  
-  componentDidMount() {
-    const promises = this.props.person.films.map((url) => {
-      return axios.get(url).then((response) => {
-        const film = response.data;
-        return film;
-      });
-    });
 
-    // use Promise.all(promises).then((responses) => { // use response.reduce() }).catch(() => {});
+  componentDidMount() {
+    const { key } = this.props.match.params;
+    axios
+      .get(`https://swapi.co/api/people/${key}`)
+      .then(({ data }) => {
+        this.setState({ person: data });
+      })
+      .catch(error => {
+        console.error('Bad Panda!');
+      });
   }
 }
 
-export default Person;
+export default PersonDetails;
