@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import Homeworld from '../Homeworld/Homeworld';
 import Species from '../Species/Species';
+import Films from '../Films/Films';
 
 class PersonDetails extends React.Component {
   state = {
@@ -33,6 +34,7 @@ class PersonDetails extends React.Component {
           </div>
           <Homeworld home={person.homeworld} />
           <Species race={person.species} />
+					<Films film={person.films} />
         </div>
       );
     }

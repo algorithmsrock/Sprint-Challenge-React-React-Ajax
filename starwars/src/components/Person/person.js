@@ -5,6 +5,7 @@ import axios from 'axios';
 import './people.css';
 import Homeworld from '../Homeworld/Homeworld';
 import Species from '../Species/Species';
+import Films from '../Films/Films';
 
 class Person extends Component {
   state = {
@@ -32,6 +33,7 @@ class Person extends Component {
           </div>
           <Homeworld home={person.homeworld} />
           <Species race={person.species} />
+					<Films films={person.films} />
         </Link>
       </div>
     );
@@ -44,7 +46,13 @@ class Person extends Component {
         return film;
       });
     });
-
+    Promise.all(promises).then((responses) => {
+				return responses.reduce((array, url) => [...array, url], []);
+			  }).then((urls) => { 
+				 return urls.map(url => fetch(url));
+			  }).catch((err) => {
+					 throw new Error(err);
+				}); 
     // use Promise.all(promises).then((responses) => { // use response.reduce() }).catch(() => {});
   }
 }
