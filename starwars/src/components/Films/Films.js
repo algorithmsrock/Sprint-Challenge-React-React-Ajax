@@ -9,7 +9,7 @@ class Films extends Component {
 	};
 }
 
- componentDidMount() { 
+/* componentDidMount() { 
   fetch(this.props.film)
 	 .then(res => {
 			 return res.json();
@@ -20,7 +20,7 @@ class Films extends Component {
    .catch(err => {
 			 throw new Error(err);
 		});
- }
+ }*/
  
   render() {
 		return (
@@ -30,7 +30,7 @@ class Films extends Component {
 					</div>
 					<hr />
 					<div className="Film__features">
-					  <div>Name: {this.state.film.name}</div>
+					  <div>Name: {this.props.film.name}</div>
 						</div>
 					</div>
 			);

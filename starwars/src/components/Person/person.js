@@ -8,12 +8,17 @@ import Species from '../Species/Species';
 import Films from '../Films/Films';
 
 class Person extends Component {
-  state = {
-    movies: []
-  }
+//  constructor(props) {
+//		super(props);  
+	 this.setState(
+		{
+       person: this.props.person
+   });
+  // this.render = this.render.bind(this);
+	}
 
   render() {
-    const person = this.props.person;
+	/*	const person = this.state.person;
     return (
       <div className="Person">
         <Link to="/">Home</Link>
@@ -33,10 +38,15 @@ class Person extends Component {
           </div>
           <Homeworld home={person.homeworld} />
           <Species race={person.species} />
-					<Films films={person.films} />
+				  <div>
+					  { person.films.map((film, i) => {
+							return <Films film={film} key={i} /> 
+						})}
+					</div>
         </Link>
-      </div>
-    );
+      </div> */
+		return null;
+  //  );
   }
   
   componentDidMount() {
@@ -47,9 +57,19 @@ class Person extends Component {
       });
     });
     Promise.all(promises).then((responses) => {
-				return responses.reduce((array, url) => [...array, url], []);
+				let person = this.state.person;
+				person.films = responses.map(response => response.data)
+
+				this.setState(
+				{  
+           person: person
+				});
+/*				return responses.data.reduce((array, url) => [...array, url], []);
 			  }).then((urls) => { 
-				 return urls.map(url => fetch(url));
+				 return urls.map((url) => {
+					  return axios.get(url).then((response) => {
+									return response.data;
+            })})*/
 			  }).catch((err) => {
 					 throw new Error(err);
 				}); 

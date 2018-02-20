@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import './App.css';
-import Person from './components/Person/person';
+import PersonDetails from './components/Person/PersonDetails';
 
 class App extends Component {
   state = {
@@ -34,7 +34,7 @@ class App extends Component {
         <h1 className="Header">React Wars</h1>
         <div className="People__container">
           {this.state.starwarsChars.map(person => {
-            return <Person person={person} key={person.id} />;
+            return <PersonDetails person={person} key={person.id} />;
           })}
         </div>
       </div>
