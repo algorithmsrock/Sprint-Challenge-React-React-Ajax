@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
+import './people.css';
 import Homeworld from '../Homeworld/Homeworld';
 import Species from '../Species/Species';
 import Films from '../Films/Films';
@@ -17,9 +17,13 @@ class PersonDetails extends React.Component {
       return <h2>Loading person info...</h2>;
     } else {
       return (
-        <div className="Person">
+					<div>
+     //   <div className="Person">
           <Link to="/">Home</Link>
           <br />
+					<Link to={`/people/${person.id}`}>
+					<div className="Person">
+					<br />
           <div>
             <strong>{person.name}</strong>
           </div>
@@ -34,18 +38,57 @@ class PersonDetails extends React.Component {
           </div>
           <Homeworld home={person.homeworld} />
           <Species race={person.species} />
+					<div className="Film">
 				   <div>
-             { person.films.map((film, i) => {
+					   <span>Films</span>
+						 </div>
+						 <br />
+             {person.films.map((film, i) => {
                  return <Films film={film} key={i} />
              })}
            </div>					
 					//<Films film={person.films} />
-        </div>
+				 </div>
+				</Link>
+				</div>
       );
     }
   }
 
-  componentDidMount() { 
+	componentDidMount() {
+    if (this.props.person) {
+      let person = this.props.person;
+			const promises = person.films.map((url) => {
+        return axios.get(url).then(response => response.data);
+      });
+      Promise.all(promises).then((responses) => person.films = responses).then(() => {
+        this.setState({ 
+          person: person
+        });
+      }).catch((err) => {
+        throw new Error(err);
+      });
+		} else {
+      let person;
+      axios.get(`https://swapi.co/api/people/${this.props.match.params.key}`).then(({ data }) => {
+        this.setState({ person: data });
+        person = data;
+      }).then(() => {
+        const promises = this.state.person.films.map((url) => {
+          return axios.get(url).then(response => response.data);
+        });
+        Promise.all(promises).then((responses) => person.films = responses).then(() => {
+          this.setState({
+            person: person
+          });
+        }).catch((err) => {
+          throw new Error(err);
+        });
+      });
+    }
+}
+
+  /*componentDidMount() { 
 		if (this.props.person) {
 			this.setState( {
          person: this.props.person
@@ -79,6 +122,6 @@ class PersonDetails extends React.Component {
           });
     }
 
-} 
+}*/ 
 
 export default PersonDetails;
