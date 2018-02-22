@@ -7,62 +7,57 @@ import Species from '../Species/Species';
 import Films from '../Films/Films';
 
 class PersonDetails extends React.Component {
-//  state = {
-//    person: null,
-//  };
-
   render() {
     const person = this.state ? this.state.person : null;
     if (!person) {
       return <h2>Loading person info...</h2>;
     } else {
+      console.log(person.films);
       return (
-					<div>
-     //   <div className="Person">
+        <div>
           <Link to="/">Home</Link>
           <br />
-					<Link to={`/people/${person.id}`}>
-					<div className="Person">
-					<br />
-          <div>
-            <strong>{person.name}</strong>
-          </div>
-          <div className="Features">
-            <div>Birth Of Year: {person.birth_year}</div>
-            <div>Eye Color: {person.eye_color}</div>
-            <div>Gender: {person.gender}</div>
-            <div>Hair Color: {person.hair_color}</div>
-            <div>Height: {person.height}</div>
-            <div>Mass: {person.mass}</div>
-            <div>Skin Color: {person.skin_color}</div>
-          </div>
-          <Homeworld home={person.homeworld} />
-          <Species race={person.species} />
-					<div className="Film">
-				   <div>
-					   <span>Films</span>
-						 </div>
-						 <br />
-             {person.films.map((film, i) => {
-                 return <Films film={film} key={i} />
-             })}
-           </div>					
-					//<Films film={person.films} />
-				 </div>
-				</Link>
-				</div>
+          <Link to={`/people/${person.id}`}>
+            <div className="Person">
+              <br />
+              <div>
+                <strong>{person.name}</strong>
+              </div>
+              <div className="Features">
+                <div>Birth Of Year: {person.birth_year}</div>
+                <div>Eye Color: {person.eye_color}</div>
+                <div>Gender: {person.gender}</div>
+                <div>Hair Color: {person.hair_color}</div>
+                <div>Height: {person.height}</div>
+                <div>Mass: {person.mass}</div>
+                <div>Skin Color: {person.skin_color}</div>
+              </div>
+              <Homeworld home={person.homeworld} />
+              <Species race={person.species} />
+              <div className="Film">
+                <div>
+                  <span>Films</span>
+                </div>
+                <br />
+                {person.films.map((film, i) => {
+                  return <Films film={film} key={i} />
+                })}
+              </div>					
+            </div>
+          </Link>
+        </div>
       );
     }
   }
-
-	componentDidMount() {
+  
+  componentDidMount() {
     if (this.props.person) {
       let person = this.props.person;
 			const promises = person.films.map((url) => {
         return axios.get(url).then(response => response.data);
       });
-      Promise.all(promises).then((responses) => person.films = responses).then(() => {
-        this.setState({ 
+      Promise.all(promises).then((responses) => person.films = responses).then(() =>{
+        this.setState({
           person: person
         });
       }).catch((err) => {
@@ -70,14 +65,14 @@ class PersonDetails extends React.Component {
       });
 		} else {
       let person;
-      axios.get(`https://swapi.co/api/people/${this.props.match.params.key}`).then(({ data }) => {
+      axios.get(`https://swapi.co/api/people/${this.props.match.params.key}`).then(({ data }) => {	 
         this.setState({ person: data });
         person = data;
       }).then(() => {
         const promises = this.state.person.films.map((url) => {
           return axios.get(url).then(response => response.data);
         });
-        Promise.all(promises).then((responses) => person.films = responses).then(() => {
+        Promise.all(promises).then((responses) => person.films = responses).then(() =>{
           this.setState({
             person: person
           });
@@ -86,42 +81,8 @@ class PersonDetails extends React.Component {
         });
       });
     }
+  }
 }
 
-  /*componentDidMount() { 
-		if (this.props.person) {
-			this.setState( {
-         person: this.props.person
-			});
-		} else {
-		 axios
-       .get(`https://swapi.co/api/people/${this.props.match.params.key}`)
-       .then(({ data }) => {	 
-        this.setState({ person: data });
-       })
-       .catch(error => {
-        console.error('Bad Panda!');
-       });
-    } 
-
-	  const promises = this.props.person.films.map((url) => {
-        return axios.get(url).then((response) => {
-          const film = response.data;
-          return film;
-        });
-      });
-      Promise.all(promises).then((responses) => {
-          let person = this.state.person;
-          person.films = responses.map(response => response.data)
-          this.setState(
-          {
-             person: person
-          });
-          }).catch((err) => {
-             throw new Error(err);
-          });
-    }
-
-}*/ 
-
 export default PersonDetails;
+
